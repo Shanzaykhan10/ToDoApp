@@ -11,11 +11,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -65,11 +68,13 @@ data class Data(val id: String, val title: String, val description: String)
 @ExperimentalMaterial3Api
 @Composable
 fun ToDoApp() {
+
     var showDialog by remember { mutableStateOf(false) }
     var id by remember { mutableStateOf("") }
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     val list = remember { mutableStateListOf<Data>() }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -228,6 +233,10 @@ fun ToDoApp() {
                                 Button(onClick = {
                                     list.add(Data(id, title, description))
                                     showDialog = false
+                                    id = ""
+                                    title = ""
+                                    description = ""
+
                                 }) {
                                     Text("Add")
                                 }
@@ -236,14 +245,37 @@ fun ToDoApp() {
                     )
                 }
 
-                Column(modifier = Modifier.padding(16.dp)) {
-                    list.forEach { data ->
-                        Text("ID: ${data.id}, Title: ${data.title}, " +
-                                "Description: ${data.description}", fontSize = 20.sp, fontWeight = FontWeight.W600)
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(10.dp)
+                    .background(Color(0xff9dbebb))) {
+                    LazyColumn(modifier = Modifier.padding(16.dp)) {
+                        itemsIndexed(list) { index, data ->
+                            Row(modifier = Modifier.padding(top = 15.dp)) {
+                                Box(
+                                    modifier = Modifier
+                                        .background(
+                                            if (index % 2 == 0) Color.Gray
+                                            else Color(0xffffd6ff)
+                                        )
+                                        .fillMaxWidth()
+                                )
+                                {
+                                    Text(
+                                        "ID: ${data.id}, Title: ${data.title}, " +
+                                                "Description: ${data.description}",
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.W600,
+                                        modifier = Modifier.padding(15.dp)
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
     )
 }
+
 
