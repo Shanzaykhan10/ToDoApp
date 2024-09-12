@@ -31,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -49,6 +50,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -66,6 +68,7 @@ class MainActivity : ComponentActivity() {
 data class Data(val id: String, val title: String, val description: String)
 
 @ExperimentalMaterial3Api
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun ToDoApp() {
 
@@ -74,6 +77,7 @@ fun ToDoApp() {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     val list = remember { mutableStateListOf<Data>() }
+    var action by remember { mutableStateOf(value = false) }
 
     Scaffold(
         topBar = {
@@ -114,7 +118,10 @@ fun ToDoApp() {
                     Spacer(modifier = Modifier.width(10.dp))
                     IconButton(
                         onClick = { },
-                        colors = IconButtonDefaults.iconButtonColors(containerColor = Color.LightGray),
+                        colors = IconButtonDefaults.iconButtonColors(containerColor = Color(
+                            0xFFDECBF1
+                        )
+                        ),
                         modifier = Modifier
                             .size(58.dp)
                             .clip(CircleShape)
@@ -143,7 +150,7 @@ fun ToDoApp() {
                             .width(180.dp)
                             .shadow(3.dp, shape = RoundedCornerShape(20.dp))
                             .background(
-                                color = Color(0xff2a9d8f)
+                                color = Color(0xFFC9AFE4)
                             )
 
                     )
@@ -160,12 +167,13 @@ fun ToDoApp() {
                             .width(180.dp)
                             .shadow(2.dp, shape = RoundedCornerShape(16.dp))
                             .background(
-                                color = Color(0xffffd6ff)
+                                color = Color(0xFFD6D2D2)
                             )
                     )
                     {
                         Text(text = "Completed", fontSize = 20.sp,
                             fontWeight = FontWeight.W600,
+                            color = Color.Black,
                             modifier = Modifier.padding(15.dp)
                         )
                     }
@@ -178,13 +186,14 @@ fun ToDoApp() {
                             .width(180.dp)
                             .shadow(3.dp, shape = RoundedCornerShape(20.dp))
                             .background(
-                                color = Color(0xff9dbebb)
+                                color = Color(0xff232323)
                             )
 
                     )
                     {
                         Text(text = "Cancel", fontSize = 20.sp,
                             fontWeight = FontWeight.W600,
+                            color = Color.White,
                             modifier = Modifier.padding(15.dp)
                         )
                     }
@@ -195,7 +204,7 @@ fun ToDoApp() {
                             .width(180.dp)
                             .shadow(2.dp, shape = RoundedCornerShape(16.dp))
                             .background(
-                                color = Color(0xffe07a5f)
+                                color = Color(0xFFB9DA93)
                             )
                     )
                     {
@@ -205,6 +214,7 @@ fun ToDoApp() {
                         )
                     }
                 }
+
                 if (showDialog) {
                     AlertDialog(
                         onDismissRequest = { showDialog = false },
@@ -225,20 +235,35 @@ fun ToDoApp() {
                                     label = { Text("Description") })
                             }
                         },
+                        dismissButton = {
+                            TextButton(onClick = {showDialog = false}) {
+                                Text(text = "Cancel")
+                            }
+                        },
+
                         confirmButton = {
                             Row(horizontalArrangement = Arrangement.End) {
-                                TextButton(onClick = { showDialog = false }) {
-                                    Text("Cancel")
-                                }
-                                Button(onClick = {
-                                    list.add(Data(id, title, description))
-                                    showDialog = false
-                                    id = ""
-                                    title = ""
-                                    description = ""
+                                if (action.equals(false)) {
+                                    Button(onClick = {
+                                        if (id.isNotBlank() &&
+                                            title.isNotBlank()&&
+                                            description.isNotBlank())
+                                        list.add(Data(id, title, description))
+                                        showDialog = false
+                                        id = ""
+                                        title = ""
+                                        description = ""
 
-                                }) {
-                                    Text("Add")
+                                    }) {
+                                        Text("Add")
+                                    }
+                                } else {
+                                    TextButton(onClick = { /*TODO*/ }) {
+                                        Text(text = "update")
+                                    }
+                                    Button(onClick = {}) {
+                                         Text(text = "Delete")
+                                    }
                                 }
                             }
                         }
@@ -248,28 +273,36 @@ fun ToDoApp() {
                 Box(modifier = Modifier
                     .fillMaxSize()
                     .padding(10.dp)
-                    .background(Color(0xff9dbebb))) {
+                    .background(Color.Transparent)){
                     LazyColumn(modifier = Modifier.padding(16.dp)) {
                         itemsIndexed(list) { index, data ->
-                            Row(modifier = Modifier.padding(top = 15.dp)) {
-                                Box(
-                                    modifier = Modifier
-                                        .background(
-                                            if (index % 2 == 0) Color.Gray
-                                            else Color(0xffffd6ff)
-                                        )
-                                        .fillMaxWidth()
-                                )
-                                {
-                                    Text(
-                                        "ID: ${data.id}, Title: ${data.title}, " +
-                                                "Description: ${data.description}",
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.W600,
-                                        modifier = Modifier.padding(15.dp)
-                                    )
-                                }
-                            }
+                          Surface(onClick = {
+                              action = true
+                              showDialog = true
+                              id = data.id
+                              title = data.title
+                              description = data.description
+                          }) {
+                              Row(modifier = Modifier.padding(top = 15.dp)) {
+                                  Box(
+                                      modifier = Modifier
+                                          .background(
+                                              if (index % 2 == 0) Color(0xFFC9AFE4)
+                                              else Color(0xFFB9DA93)
+                                          )
+                                          .fillMaxWidth()
+                                  )
+                                  {
+                                      Text(
+                                          "ID: ${data.id}, Title: ${data.title}, " +
+                                                  "Description: ${data.description}",
+                                          fontSize = 20.sp,
+                                          fontWeight = FontWeight.W600,
+                                          modifier = Modifier.padding(15.dp)
+                                      )
+                                  }
+                              }
+                          }
                         }
                     }
                 }
