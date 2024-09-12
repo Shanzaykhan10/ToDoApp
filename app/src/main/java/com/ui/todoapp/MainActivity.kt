@@ -43,6 +43,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -50,6 +51,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -101,7 +103,8 @@ fun ToDoApp() {
                     Spacer(modifier = Modifier.width(90.dp))
 
                     IconButton(
-                        onClick = { showDialog = true },
+                        onClick = { showDialog = true
+                                  action = false},
                         modifier = Modifier
                             .size(55.dp)
                             .clip(CircleShape),
@@ -153,13 +156,28 @@ fun ToDoApp() {
                                 color = Color(0xFFC9AFE4)
                             )
 
-                    )
-                    {
-                        Text(text = "In Progress", fontSize = 20.sp,
-                            fontWeight = FontWeight.W600,
-                            modifier = Modifier.padding(15.dp)
-                        )
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxSize()) {
+                            Text(
+                                text = "In Progress", fontSize = 18.sp,
+                                fontWeight = FontWeight.W600,
+                                modifier = Modifier.padding(15.dp)
+                            )
+                            Spacer(modifier = Modifier.padding(2.dp))
+                            Box(modifier = Modifier
+                                .size(50.dp)
+                                .shadow(1.dp, shape = CircleShape)
+                                .background(Color.White))
+                            {
+                             Text(text = "1", fontSize = 20.sp
+                                 , textAlign = TextAlign.Center ,
+                                 modifier = Modifier.fillMaxSize()
+                                     .padding(top = 12.dp))
+                            }
+                        }
                     }
+                    
                     Box(
                         modifier = Modifier
                             .padding(8.dp)
@@ -171,11 +189,25 @@ fun ToDoApp() {
                             )
                     )
                     {
-                        Text(text = "Completed", fontSize = 20.sp,
-                            fontWeight = FontWeight.W600,
-                            color = Color.Black,
-                            modifier = Modifier.padding(15.dp)
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxSize()) {
+                            Text(
+                                text = "Completed", fontSize = 18.sp,
+                                fontWeight = FontWeight.W600,
+                                modifier = Modifier.padding(15.dp)
+                            )
+                            Spacer(modifier = Modifier.padding(4.dp))
+                            Box(modifier = Modifier
+                                .size(50.dp)
+                                .shadow(1.dp, shape = CircleShape)
+                                .background(Color.White))
+                            {
+                                Text(text = "2", fontSize = 20.sp
+                                    , textAlign = TextAlign.Center ,
+                                    modifier = Modifier.fillMaxSize()
+                                        .padding(top = 12.dp))
+                            }
+                        }
                     }
                 }
                 Row(modifier = Modifier.fillMaxWidth()) {
@@ -190,12 +222,28 @@ fun ToDoApp() {
                             )
 
                     )
+
                     {
-                        Text(text = "Cancel", fontSize = 20.sp,
-                            fontWeight = FontWeight.W600,
-                            color = Color.White,
-                            modifier = Modifier.padding(15.dp)
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxSize()) {
+                            Text(
+                                text = "Cancel", fontSize = 18.sp,
+                                fontWeight = FontWeight.W600,
+                                color = Color.White,
+                                modifier = Modifier.padding(15.dp)
+                            )
+                            Spacer(modifier = Modifier.padding(20.dp))
+                            Box(modifier = Modifier
+                                .size(50.dp)
+                                .shadow(1.dp, shape = CircleShape)
+                                .background(Color.White))
+                            {
+                                Text(text = "3", fontSize = 20.sp
+                                    , textAlign = TextAlign.Center ,
+                                    modifier = Modifier.fillMaxSize()
+                                        .padding(top = 12.dp))
+                            }
+                        }
                     }
                     Box(
                         modifier = Modifier
@@ -208,10 +256,25 @@ fun ToDoApp() {
                             )
                     )
                     {
-                        Text(text = "Delayed", fontSize = 20.sp,
-                            fontWeight = FontWeight.W600,
-                            modifier = Modifier.padding(15.dp)
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxSize()) {
+                            Text(
+                                text = "Delayed", fontSize = 18.sp,
+                                fontWeight = FontWeight.W600,
+                                modifier = Modifier.padding(15.dp)
+                            )
+                            Spacer(modifier = Modifier.padding(16.dp))
+                            Box(modifier = Modifier
+                                .size(50.dp)
+                                .shadow(1.dp, shape = CircleShape)
+                                .background(Color.White))
+                            {
+                                Text(text = "4", fontSize = 20.sp
+                                    , textAlign = TextAlign.Center ,
+                                    modifier = Modifier.fillMaxSize()
+                                        .padding(top = 12.dp))
+                            }
+                        }
                     }
                 }
 
@@ -248,7 +311,7 @@ fun ToDoApp() {
                                         if (id.isNotBlank() &&
                                             title.isNotBlank()&&
                                             description.isNotBlank())
-                                        list.add(Data(id, title, description))
+                                            list.add(Data(id, title, description))
                                         showDialog = false
                                         id = ""
                                         title = ""
@@ -272,9 +335,9 @@ fun ToDoApp() {
 
                 Box(modifier = Modifier
                     .fillMaxSize()
-                    .padding(10.dp)
+                    .padding(5.dp)
                     .background(Color.Transparent)){
-                    LazyColumn(modifier = Modifier.padding(16.dp)) {
+                    LazyColumn(modifier = Modifier.padding(7.dp)) {
                         itemsIndexed(list) { index, data ->
                           Surface(onClick = {
                               action = true
@@ -282,10 +345,12 @@ fun ToDoApp() {
                               id = data.id
                               title = data.title
                               description = data.description
+
                           }) {
                               Row(modifier = Modifier.padding(top = 15.dp)) {
                                   Box(
                                       modifier = Modifier
+                                          .shadow(2.dp, shape = RoundedCornerShape(10.dp))
                                           .background(
                                               if (index % 2 == 0) Color(0xFFC9AFE4)
                                               else Color(0xFFB9DA93)
