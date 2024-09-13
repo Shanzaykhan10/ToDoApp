@@ -67,7 +67,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-data class Data(val id: String, val title: String, val description: String)
+data class Data(val id: String, var title: String, var description: String)
 
 @ExperimentalMaterial3Api
 @Preview(showBackground = true, showSystemUi = true)
@@ -82,14 +82,13 @@ fun ToDoApp() {
     var action by remember { mutableStateOf(value = false) }
 
     Scaffold(
-        topBar = {
+        topBar = {       // top app bar
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
                 ),
                 modifier = Modifier.padding(16.dp),
-                title = {},
-                navigationIcon = {
+                title = {
                     Image(
                         painter = painterResource(id = R.drawable.pic),
                         contentDescription = "My Pic",
@@ -122,7 +121,7 @@ fun ToDoApp() {
                     IconButton(
                         onClick = { },
                         colors = IconButtonDefaults.iconButtonColors(containerColor = Color(
-                            0xFFDECBF1
+                            0xFFDDCEEF
                         )
                         ),
                         modifier = Modifier
@@ -138,6 +137,8 @@ fun ToDoApp() {
                 }
             )
         },
+
+        // body
         content = { innerPadding ->
             Column(modifier = Modifier.padding(innerPadding)) {
                 Text(
@@ -145,8 +146,10 @@ fun ToDoApp() {
                     modifier = Modifier.padding(20.dp), // Adjust padding as needed
                     fontSize = 30.sp, fontWeight = FontWeight.ExtraBold
                 )
+
+                // boxes
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    Box(
+                    Box(   // In progress box
                         modifier = Modifier
                             .padding(9.dp)
                             .height(60.dp)
@@ -178,7 +181,7 @@ fun ToDoApp() {
                         }
                     }
                     
-                    Box(
+                    Box(    // Completed box
                         modifier = Modifier
                             .padding(8.dp)
                             .height(60.dp)
@@ -211,7 +214,7 @@ fun ToDoApp() {
                     }
                 }
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    Box(
+                    Box(      // cancel box
                         modifier = Modifier
                             .padding(9.dp)
                             .height(60.dp)
@@ -245,7 +248,7 @@ fun ToDoApp() {
                             }
                         }
                     }
-                    Box(
+                    Box(   // delay box
                         modifier = Modifier
                             .padding(8.dp)
                             .height(60.dp)
@@ -278,6 +281,7 @@ fun ToDoApp() {
                     }
                 }
 
+                // Alert dailog box
                 if (showDialog) {
                     AlertDialog(
                         onDismissRequest = { showDialog = false },
@@ -298,8 +302,13 @@ fun ToDoApp() {
                                     label = { Text("Description") })
                             }
                         },
+
+                        // buttons
                         dismissButton = {
-                            TextButton(onClick = {showDialog = false}) {
+                            TextButton(onClick = {showDialog = false
+                                id = ""
+                                title = ""
+                                description = ""}) {
                                 Text(text = "Cancel")
                             }
                         },
@@ -320,12 +329,41 @@ fun ToDoApp() {
                                     }) {
                                         Text("Add")
                                     }
-                                } else {
-                                    TextButton(onClick = { /*TODO*/ }) {
-                                        Text(text = "update")
+                                }
+
+                                 // update or delete button
+                                else {
+                                    // Update button
+                                    TextButton(onClick = {
+                                        val existingData = list.find { it.id == id }
+                                        if (existingData != null) {
+                                            existingData.title = title
+                                            existingData.description = description
+                                        }
+
+                                        showDialog = false
+                                        id = ""
+                                        title = ""
+                                        description = ""
+                                    }) {
+                                        Text(text = "Update")
                                     }
-                                    Button(onClick = {}) {
-                                         Text(text = "Delete")
+
+                                    // delete button
+                                    Button(onClick = {
+
+                                        val existingData = list.find { it.id == id }
+
+                                        if (existingData != null) {
+                                            list.remove(existingData)
+                                        }
+
+                                        showDialog = false
+                                        id = ""
+                                        title = ""
+                                        description = ""
+                                    }) {
+                                        Text(text = "Delete")
                                     }
                                 }
                             }
@@ -333,6 +371,7 @@ fun ToDoApp() {
                     )
                 }
 
+                // List display
                 Box(modifier = Modifier
                     .fillMaxSize()
                     .padding(5.dp)
